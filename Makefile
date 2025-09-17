@@ -8,7 +8,8 @@ help:
 	@echo "  make reset         - Reset database and rebuild"
 	@echo "  make test          - Run tests"
 	@echo "  make migrate       - Run database migrations"
-	@echo "  make migration     - Create new migration"
+	@echo "  make migration     - Create new migration (with error checking)"
+	@echo "  make migration-check - Check migration status"
 	@echo "  make lint          - Run linters"
 	@echo "  make format        - Format code"
 	@echo "  make logs          - Show container logs"
@@ -51,6 +52,14 @@ migrate:
 
 .PHONY: migration
 migration:
+	@cd backend && python3 scripts/migration_helper.py
+
+.PHONY: migration-check
+migration-check:
+	@cd backend && python3 scripts/migration_helper.py --check-only
+
+.PHONY: migration-old
+migration-old:
 	@read -p "Enter migration message: " msg; \
 	cd backend && alembic revision --autogenerate -m "$$msg"
 
